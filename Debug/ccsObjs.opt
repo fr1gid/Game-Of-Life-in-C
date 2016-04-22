@@ -1,0 +1,1 @@
+"./RBX430-1.obj" "./RBX430_lcd.obj" "./life.obj" "./lifelib.obj" "../lnk_msp430f2274.cmd" -l"libc.a" 
