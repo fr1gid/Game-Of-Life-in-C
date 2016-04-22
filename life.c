@@ -92,8 +92,6 @@ uint8 life_pr[NUM_COLS/8];				// previous row
 uint8 life_cr[NUM_COLS/8];				// current row
 uint8 life_nr[NUM_COLS/8];				// next row
 
-
-
 uint8* temp;
 uint8* life_p;
 uint8* life_c;
@@ -127,9 +125,6 @@ int cellTest(uint8 life_row[], int col){
 //------------------------------------------------------------------------------
 //	draw RLE pattern -----------------------------------------------------------
 void draw_rle_pattern(int row, int col, const uint8* pattern){
-	// row = lower Life grid row (0-79) of the pattern
-	// col = left Life grid column (0-79) of the pattern
-	// pattern = byte pointer (const uint8*) to the RLE pattern
 
 	uint8 i; // iterator
 	int number; //
@@ -245,9 +240,8 @@ void main(void){
 			memcpy(&life_cr, &life[78], 10 * sizeof(uint8));
 			memcpy(&life_nr, &life[77], 10 * sizeof(uint8));
 
-			row = NUM_ROWS-2;
+			row = (NUM_ROWS-2);
 			do {
-			//for (row = NUM_ROWS-2; row > 0; row--){ // check from top to bottom
 				// Start a new row
 				totalNeighbors = 0;
 				leftNeighbors = 0; // 0 becasue it is the border
@@ -259,10 +253,9 @@ void main(void){
 
 				col = 1;
 				do{
-				//for (col = 1; col < 79; col++){ // check from left
 					totalNeighbors = leftNeighbors + (middleNeighbors - currentCell) + rightNeighbors; // add up the nearby cells to get the total neighboors
-					if(currentCell == 1){
-						if (!(totalNeighbors == 2 || totalNeighbors == 3)){	// if the cell is currently alive
+					if(currentCell == 1){ // if the cell is currently alive
+						if (!(totalNeighbors == 2 || totalNeighbors == 3)){
 							// the cell has too few or too many neighbors
 							CELL_DEATH(row, col);
 							CELL_DELETE(row, col);
@@ -273,20 +266,17 @@ void main(void){
 							CELL_DRAW(row, col);			// set LCD 2x2 pixel point
 						}
 					}
-					leftNeighbors = middleNeighbors;						// what was middle is now left
+					leftNeighbors = middleNeighbors;				// what was middle is now left
 					currentCell = TEST_CELL(life_cr, col + 1);		// current now has to check for a new self
-					middleNeighbors = rightNeighbors;					// what was right is now middle
+					middleNeighbors = rightNeighbors;				// what was right is now middle
 					rightNeighbors = TEST_CELL(life_pr, col + 2) + TEST_CELL(life_cr, col + 2) + TEST_CELL(life_nr, col + 2);
 					col++;
-				//}
 				} while (col < 79);
+
 				memcpy(&life_pr, &life_cr, sizeof(life_cr));
 				memcpy(&life_cr, &life_nr, sizeof(life_nr));
 				memcpy(&life_nr, &life[row - 2], sizeof(life[0]));
-				//memcpy(life_nr, life[row - 2], 10 * sizeof(uint8));			// sets next row
-
 				row--;
-			//}
 			} while (row > 0);
 			if (display_results()) break; // display life generation and generations/second on LCD
 		}
